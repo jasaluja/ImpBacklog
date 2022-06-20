@@ -1,0 +1,25 @@
+﻿@model System.Data.DataTable
+
+<style>
+</style>
+No. of rows = @Model.Rows.Count;
+No. of columns= @Model.Columns.Count;
+<div>
+	<table class="table table-bordered table-responsive table-striped sortable">
+		<thead class="table-dark">
+			@for (int ii = 0; ii < Model.Columns.Count; ii++)
+			{
+			<th>@Model.Columns[ii].ColumnName</th>
+		}
+			</thead>
+			@for (int i = 0; i < Model.Rows.Count; i++)
+			{
+				<tr>
+					@for (int j = 0; j < Model.Columns.Count; j++)
+					{
+						<td>@Model.Rows[i][j]</td>
+					}
+				</tr>
+			}
+		</table>
+	</div>
