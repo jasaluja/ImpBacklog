@@ -15,17 +15,14 @@ namespace Backlog_Segregation_Tool.Controllers
 	{
 		private readonly ILogger<HomeController> _logger;
 		private readonly IConfiguration _config;
-		String[] fnames = new string[] {"Coast360 Federal Credit Union",
-"FALCON NATIONAL BANK CENTRA",
-"MERIWEST CREDIT UNION",
-"SIERRA CENTRAL CREDIT UNION",
-"WHATCOM EDUCATIONAL CREDIT UNION",
-"SEATTLE CREDIT UNION"
-};
+		public DataSet backlog = new DataSet();
+
+
+		public String[] diplometsClients;
 		public HomeController(IConfiguration configuration)
 		{
 			_config = configuration;
-			
+			diplometsClients = _config.GetSection("DiplometsClients").Get<List<string>>().ToArray();
 		}
 
 		public IActionResult Index()
@@ -35,9 +32,11 @@ namespace Backlog_Segregation_Tool.Controllers
 			ExcelReader excelReader = new ExcelReader(path);
 			DataTable fdata = excelReader.FilteredData;
 			BacklogSperator bs = new BacklogSperator(fdata);
-			bs.getDiplomatsCases(fnames);
+			backlog.Tables.Add(bs.getDiplomatsCases(diplometsClients));
 			bs.getChallangersCases(36);
-			return View(excelReader.FilteredData);
+			backlog.Tables.Add(bs.challangers);
+			backlog.Tables.Add(bs.optimizers);
+			return View(backlog);
 		}
 
 		public IActionResult Privacy()

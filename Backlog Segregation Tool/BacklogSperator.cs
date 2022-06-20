@@ -11,29 +11,31 @@ namespace Backlog_Segregation_Tool
 		public DataTable challangers = new DataTable();
 		public DataTable optimizers = new DataTable();
 		public DataTable restdata = new DataTable();
-		public DataTable diplomets = new DataTable();
+		public DataTable diplomets { set; get; } = new DataTable();
 		public BacklogSperator(DataTable dataTable)
 		{
 			filtered_data = dataTable;
 		}
-		
+
 		public DataTable getDiplomatsCases(String[] FINames)
 		{
-			if (FINames == null) {
+			if (FINames == null)
+			{
 				return new DataTable();
 			}
-		
-			
+
+
 			diplomets = filtered_data.Clone();
+			diplomets.TableName = "Diplomets";
 			restdata = filtered_data.Clone();
-			for(int i = 0; i < filtered_data.Rows.Count; i++)
+			for (int i = 0; i < filtered_data.Rows.Count; i++)
 			{
 				bool flag = false;
-				if (filtered_data.Rows[i]["Client Name"]!=null)
+				if (filtered_data.Rows[i]["Client Name"] != null)
 				{
 					for (int j = 0; j < FINames.Length; j++)
 					{
-						
+
 						if (filtered_data.Rows[i]["Client Name"].ToString() == FINames[j])
 						{
 							diplomets.ImportRow(filtered_data.Rows[i]);
@@ -41,24 +43,27 @@ namespace Backlog_Segregation_Tool
 							//break;
 
 						}
-						
+
 					}
 					if (flag == false)
 					{
 
 						restdata.ImportRow(filtered_data.Rows[i]);
-						
+
 					}
 				}
-               
+
 			}
 			return diplomets;
 		}
-	
-		public DataTable getChallangersCases(int MaxNumberOfDays)
+
+		public void getChallangersCases(int MaxNumberOfDays)
 		{
 			challangers = filtered_data.Clone();
+			challangers.TableName = "Challangers";
+
 			optimizers = filtered_data.Clone();
+			optimizers.TableName = "Optimizers";
 			for (int i = 0; i < restdata.Rows.Count; i++)
 			{
 
@@ -75,10 +80,10 @@ namespace Backlog_Segregation_Tool
 				}
 				else
 				{
-					optimizers.ImportRow(filtered_data.Rows[i]);
+					optimizers.ImportRow(restdata.Rows[i]);
 				}
 			}
-			return new DataTable();
+			return;
 		}
 	}
 }
