@@ -37,9 +37,7 @@
 	<table>
 		<tr><td>Group Name:</td>
 		<td>
-			@{ 
-				var gname = "DCHA.3.Architect.AMS.Imp";
-			}
+			
 	@Html.DropDownList("Group Name", new List<SelectListItem>
 {
 new SelectListItem{ Text="DCHA.3.Architect.AMS.Imp", Value = "DCHA.3.Architect.AMS.Imp",Selected=true },
@@ -48,7 +46,7 @@ new SelectListItem{ Text="DCHA.3.Architect.AMS.Base", Value = "DCHA.3.Architect.
 {
 	@onchange = "callChangefunc(this.value)"
 }
-);
+)
 </td>
 		</tr>
 	</table>

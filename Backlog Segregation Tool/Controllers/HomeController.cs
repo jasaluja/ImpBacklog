@@ -25,11 +25,11 @@ namespace Backlog_Segregation_Tool.Controllers
 			diplometsClients = _config.GetSection("DiplometsClients").Get<List<string>>().ToArray();
 		}
 
-		public IActionResult Index(String groupName)
+		public IActionResult Index(String gname= "DCHA.3.Architect.AMS.Imp")
 		{
 			Console.WriteLine("excel readerjhgkhk");
 			var path = _config.GetSection("Excel_path").Value;
-			ExcelReader excelReader = new ExcelReader(path,groupName);
+			ExcelReader excelReader = new ExcelReader(path,gname);
 			DataTable fdata = excelReader.FilteredData;
 			BacklogSperator bs = new BacklogSperator(fdata);
 			backlog.Tables.Add(bs.getDiplomatsCases(diplometsClients));
