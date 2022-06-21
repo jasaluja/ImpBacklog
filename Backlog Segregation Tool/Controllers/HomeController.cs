@@ -16,7 +16,7 @@ namespace Backlog_Segregation_Tool.Controllers
 		private readonly ILogger<HomeController> _logger;
 		private readonly IConfiguration _config;
 		public DataSet backlog = new DataSet();
-
+		
 
 		public String[] diplometsClients;
 		public HomeController(IConfiguration configuration)
@@ -25,11 +25,11 @@ namespace Backlog_Segregation_Tool.Controllers
 			diplometsClients = _config.GetSection("DiplometsClients").Get<List<string>>().ToArray();
 		}
 
-		public IActionResult Index()
+		public IActionResult Index(String groupName)
 		{
 			Console.WriteLine("excel readerjhgkhk");
 			var path = _config.GetSection("Excel_path").Value;
-			ExcelReader excelReader = new ExcelReader(path);
+			ExcelReader excelReader = new ExcelReader(path,groupName);
 			DataTable fdata = excelReader.FilteredData;
 			BacklogSperator bs = new BacklogSperator(fdata);
 			backlog.Tables.Add(bs.getDiplomatsCases(diplometsClients));

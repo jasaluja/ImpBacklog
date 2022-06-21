@@ -16,7 +16,7 @@ namespace Backlog_Segregation_Tool
         IConfiguration configuration;
 
 
-        public ExcelReader(String path)
+        public ExcelReader(String path,String groupName)
         {
 
             Console.WriteLine();
@@ -42,7 +42,7 @@ namespace Backlog_Segregation_Tool
                 // Now you can get data from each sheet by its index or its "name"
                 var dataTable = dataSet.Tables[0];
 
-                var q = dataTable.AsEnumerable().Where(p => p.Field<string>("Assignment Group") == "DCHA.3.Architect.AMS.Imp");
+                var q = dataTable.AsEnumerable().Where(p => p.Field<string>("Assignment Group").ToLower() == groupName.ToLower());
 
                 var dt2 = q.AsDataView();
                 FilteredData = dt2.ToTable();

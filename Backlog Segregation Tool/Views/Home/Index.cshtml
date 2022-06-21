@@ -33,6 +33,27 @@
 		display: none;
 	}
 </style>
+<div>
+	<table>
+		<tr><td>Group Name:</td>
+		<td>
+			@{ 
+				var gname = "DCHA.3.Architect.AMS.Imp";
+			}
+	@Html.DropDownList("Group Name", new List<SelectListItem>
+{
+new SelectListItem{ Text="DCHA.3.Architect.AMS.Imp", Value = "DCHA.3.Architect.AMS.Imp",Selected=true },
+new SelectListItem{ Text="DCHA.3.Architect.AMS.Base", Value = "DCHA.3.Architect.AMS.Base" }
+}, new
+{
+	@onchange = "callChangefunc(this.value)"
+}
+);
+</td>
+		</tr>
+	</table>
+	
+</div>
 <div class="tab">
 	<button class="tablinks active" onclick="openTab(event, 'Diplomets')">Diplomets</button>
 	<button class="tablinks" onclick="openTab(event, 'Challangers')">Challangers</button>
@@ -40,13 +61,14 @@
 
 
 </div>
-<div id="Diplomets" class="tabcontent">
+<div id="Diplomets" style="display:block" class="tabcontent">
 	Total Cases : @Model.Tables[0].Rows.Count 
+	<button class="btn btn-success" onclick="ExportToExcel('xlsx','diplomets');">Export</button>
 	<table id="diplomets" class="table table-bordered table-responsive table-striped sortable">
 		<thead class="table-dark">
 			@for (int ii = 0; ii < Model.Tables[0].Columns.Count; ii++)
 			{
-			<TD onclick="sortTable(@ii,'diplomets')">@Model.Tables[0].Columns[ii].ColumnName</TD>
+			<TD onclick="sortTable(@ii,'diplomets')">@Model.Tables[0].Columns[ii].ColumnName <icon></icon></TD>
 		}
 			</thead>
 			@for (int i = 0; i < Model.Tables[0].Rows.Count; i++)
@@ -61,47 +83,49 @@
 		</table>
 	</div>
 
-	<div id="Challangers" class="tabcontent">
-		Total Cases : @Model.Tables[1].Rows.Count
-		<table id="challangers" class="table table-bordered table-responsive table-striped sortable">
-			<thead class="table-dark">
-				@for (int ii = 0; ii < Model.Tables[1].Columns.Count; ii++)
-				{
-				<TD onclick="sortTable(@ii,'challangers')">@Model.Tables[1].Columns[ii].ColumnName</TD>
-			}
-				</thead>
-				@for (int i = 0; i < Model.Tables[1].Rows.Count; i++)
-				{
-					<tr>
-						@for (int j = 0; j < Model.Tables[1].Columns.Count; j++)
-						{
-							<td>@Model.Tables[1].Rows[i][j]</td>
-						}
-					</tr>
-				}
-			</table>
-		</div>
-
-		<div id="Optimizers" class="tabcontent">
-			Total Cases : @Model.Tables[2].Rows.Count
-			<table id="optimizers" class="table table-bordered table-responsive table-striped sortable">
-				<thead class="table-dark">
-					@for (int ii = 0; ii < Model.Tables[2].Columns.Count; ii++)
+<div id="Challangers" class="tabcontent">
+	Total Cases : @Model.Tables[1].Rows.Count
+	<button class="btn btn-success" onclick="ExportToExcel('xlsx','challangers');">Export</button>
+	<table id="challangers" class="table table-bordered table-responsive table-striped sortable">
+		<thead class="table-dark">
+			@for (int ii = 0; ii < Model.Tables[1].Columns.Count; ii++)
+			{
+			<TD onclick="sortTable(@ii,'challangers')">@Model.Tables[1].Columns[ii].ColumnName</TD>
+		}
+			</thead>
+			@for (int i = 0; i < Model.Tables[1].Rows.Count; i++)
+			{
+				<tr>
+					@for (int j = 0; j < Model.Tables[1].Columns.Count; j++)
 					{
-					<TD onclick="sortTable(@ii,'optimizers')">@Model.Tables[2].Columns[ii].ColumnName</TD>
-				}
-					</thead>
-					@for (int i = 0; i < Model.Tables[2].Rows.Count; i++)
-					{
-						<tr>
-							@for (int j = 0; j < Model.Tables[2].Columns.Count; j++)
-							{
-								<td>@Model.Tables[2].Rows[i][j]</td>
-							}
-						</tr>
+						<td>@Model.Tables[1].Rows[i][j]</td>
 					}
-				</table>
-			</div>
+				</tr>
+			}
+		</table>
+	</div>
+
+<div id="Optimizers" class="tabcontent">
+	Total Cases : @Model.Tables[2].Rows.Count
+	<button class="btn btn-success" onclick="ExportToExcel('xlsx','optimizers');">Export</button>
+	<table id="optimizers" class="table table-bordered table-responsive table-striped sortable">
+		<thead class="table-dark">
+			@for (int ii = 0; ii < Model.Tables[2].Columns.Count; ii++)
+			{
+			<TD onclick="sortTable(@ii,'optimizers')">@Model.Tables[2].Columns[ii].ColumnName</TD>
+		}
+			</thead>
+			@for (int i = 0; i < Model.Tables[2].Rows.Count; i++)
+			{
+				<tr>
+					@for (int j = 0; j < Model.Tables[2].Columns.Count; j++)
+					{
+						<td>@Model.Tables[2].Rows[i][j]</td>
+					}
+				</tr>
+			}
+		</table>
+	</div>
 
 			<script>
 	function openTab(evt, tableName) {
@@ -124,8 +148,8 @@
 		// Show the current tab, and add an "active" class to the button that opened the tab
 		document.getElementById(tableName).style.display = "block";
 		evt.currentTarget.className += " active";
-	}
-
+				}
+				
 	function sortTable(n,idname) {
 		var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
 		table = document.getElementById(idname);
@@ -179,5 +203,17 @@
 				}
 			}
 		}
-	}
+				}
+
+	function ExportToExcel(type, tablename, fn, dl) {
+					var elt = document.getElementById(tablename);
+					var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
+					return dl ?
+						XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }) :
+						XLSX.writeFile(wb, fn || ('Backlog_'+tablename+'.' + (type || 'xlsx')));
+				}
+
+	function callChangefunc(val) {
+		window.location.href = "/?gname="+val;
+				}
 			</script>
