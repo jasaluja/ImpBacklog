@@ -16,7 +16,7 @@ namespace Backlog_Segregation_Tool
         IConfiguration configuration;
 
 
-        public ExcelReader(String path,String groupName)
+        public ExcelReader(String path, String groupName)
         {
 
             Console.WriteLine();
@@ -42,12 +42,39 @@ namespace Backlog_Segregation_Tool
                 // Now you can get data from each sheet by its index or its "name"
                 var dataTable = dataSet.Tables[0];
 
-                var q = dataTable.AsEnumerable().Where(p => p.Field<string>("Assignment Group").ToLower() == groupName.ToLower());
+                var q = dataTable.AsEnumerable().Where(p => p.Field<string>("Assignment Group") == groupName);
 
                 var dt2 = q.AsDataView();
                 FilteredData = dt2.ToTable();
+                FilteredData.Columns.Add("PreTriageStatus", typeof(bool));
+                foreach (var data in FilteredData.AsEnumerable())
+                {
+                    String tag = data.Field<String>("Tag");
+                    if (tag!=null)
+                    {
+                        if (tag.ToLower().Contains("PretriageAccepted".ToLower()))
+                        {
+                            data.BeginEdit();
+                            data["PreTriageStatus"] = true;
+                            data.EndEdit();
+						}
+						else
+						{
+                            data.BeginEdit();
+                            data["PreTriageStatus"] = false;
+                            data.EndEdit();
+                        }
 
+					}
+					else
+					{
+                        data.BeginEdit();
+                        data["PreTriageStatus"] = false;
+                        data.EndEdit();
+                    }
+                }
             }
         }
     }
 }
+

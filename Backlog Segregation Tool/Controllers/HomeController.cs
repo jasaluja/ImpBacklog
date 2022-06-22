@@ -16,8 +16,8 @@ namespace Backlog_Segregation_Tool.Controllers
 		private readonly ILogger<HomeController> _logger;
 		private readonly IConfiguration _config;
 		public DataSet backlog = new DataSet();
-		
-
+		public BacklogDataModel backlogData = new BacklogDataModel();
+	    
 		public String[] diplometsClients;
 		public HomeController(IConfiguration configuration)
 		{
@@ -32,11 +32,20 @@ namespace Backlog_Segregation_Tool.Controllers
 			ExcelReader excelReader = new ExcelReader(path,gname);
 			DataTable fdata = excelReader.FilteredData;
 			BacklogSperator bs = new BacklogSperator(fdata);
-			backlog.Tables.Add(bs.getDiplomatsCases(diplometsClients));
+			bs.getDiplomatsCases(diplometsClients);
 			bs.getChallangersCases(36);
-			backlog.Tables.Add(bs.challangers);
-			backlog.Tables.Add(bs.optimizers);
-			return View(backlog);
+			backlogData = bs.getSepratedBacklog();
+			if (gname == "DCHA.3.Architect.AMS.Imp")
+			{
+				backlogData.IsImpSelected = true;
+				backlogData.IsBaseSelected = false;
+			}
+			if(gname == "DCHA.3.Architect.AMS.Base")
+			{
+				backlogData.IsImpSelected = false;
+				backlogData.IsBaseSelected = true;
+			}
+			return View(backlogData);
 		}
 
 		public IActionResult Privacy()

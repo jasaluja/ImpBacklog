@@ -1,4 +1,4 @@
-﻿@model System.Data.DataSet
+﻿@model BacklogDataModel
 
 <style>
 	.tab {
@@ -40,8 +40,8 @@
 			
 	@Html.DropDownList("Group Name", new List<SelectListItem>
 {
-new SelectListItem{ Text="DCHA.3.Architect.AMS.Imp", Value = "DCHA.3.Architect.AMS.Imp",Selected=true },
-new SelectListItem{ Text="DCHA.3.Architect.AMS.Base", Value = "DCHA.3.Architect.AMS.Base" }
+new SelectListItem{ Text="DCHA.3.Architect.AMS.Imp", Value = "DCHA.3.Architect.AMS.Imp",Selected=Model.IsImpSelected },
+new SelectListItem{ Text="DCHA.3.Architect.AMS.Base", Value = "DCHA.3.Architect.AMS.Base",Selected=Model.IsBaseSelected }
 }, new
 {
 	@onchange = "callChangefunc(this.value)"
@@ -60,67 +60,86 @@ new SelectListItem{ Text="DCHA.3.Architect.AMS.Base", Value = "DCHA.3.Architect.
 
 </div>
 <div id="Diplomets" style="display:block" class="tabcontent">
-	Total Cases : @Model.Tables[0].Rows.Count 
+	UnAssigned Cases: @Model.DiplometsUnAssignedCases
+	Assigned Cases: @Model.DiplometsAssignedCases
+	Total Cases : @Model.backlog.Tables[0].Rows.Count
 	<button class="btn btn-success" onclick="ExportToExcel('xlsx','diplomets');">Export</button>
 	<table id="diplomets" class="table table-bordered table-responsive table-striped sortable">
 		<thead class="table-dark">
-			@for (int ii = 0; ii < Model.Tables[0].Columns.Count; ii++)
+			<TD>Pretriage Status</TD>
+			@for (int ii = 0; ii < Model.backlog.Tables[0].Columns.Count - 1; ii++)
 			{
-			<TD onclick="sortTable(@ii,'diplomets')">@Model.Tables[0].Columns[ii].ColumnName <icon></icon></TD>
+<TD onclick="sortTable(@ii+1,'diplomets')">@Model.backlog.Tables[0].Columns[ii].ColumnName <icon></icon></TD>
 		}
 			</thead>
-			@for (int i = 0; i < Model.Tables[0].Rows.Count; i++)
+
+			@for (int i = 0; i < Model.backlog.Tables[0].Rows.Count; i++)
 			{
 				<tr>
-					@for (int j = 0; j < Model.Tables[0].Columns.Count; j++)
+					<td><input type="checkbox" value="" checked="@Model.backlog.Tables[0].Rows[i]["PreTriageStatus"]" /></td>
+					@for (int j = 0; j < Model.backlog.Tables[0].Columns.Count - 1; j++)
 					{
-						<td>@Model.Tables[0].Rows[i][j]</td>
+						<td>@Model.backlog.Tables[0].Rows[i][j]</td>
 					}
+					
 				</tr>
+
+
 			}
 		</table>
 	</div>
 
 <div id="Challangers" class="tabcontent">
-	Total Cases : @Model.Tables[1].Rows.Count
+
+	UnAssigned Cases: @Model.ChallangerUnAssignedCases
+	Assigned Cases: @Model.ChallangerAssignedCases
+	Total Cases : @Model.backlog.Tables[1].Rows.Count
 	<button class="btn btn-success" onclick="ExportToExcel('xlsx','challangers');">Export</button>
 	<table id="challangers" class="table table-bordered table-responsive table-striped sortable">
 		<thead class="table-dark">
-			@for (int ii = 0; ii < Model.Tables[1].Columns.Count; ii++)
+			<TD>Pretriage Status</TD>
+			@for (int ii = 0; ii < Model.backlog.Tables[1].Columns.Count; ii++)
 			{
-			<TD onclick="sortTable(@ii,'challangers')">@Model.Tables[1].Columns[ii].ColumnName</TD>
+			<TD onclick="sortTable(@ii+1,'challangers')">@Model.backlog.Tables[1].Columns[ii].ColumnName</TD>
 		}
 			</thead>
-			@for (int i = 0; i < Model.Tables[1].Rows.Count; i++)
+			@for (int i = 0; i < Model.backlog.Tables[1].Rows.Count; i++)
 			{
-				<tr>
-					@for (int j = 0; j < Model.Tables[1].Columns.Count; j++)
-					{
-						<td>@Model.Tables[1].Rows[i][j]</td>
-					}
-				</tr>
+	<tr>
+		<td><input type="checkbox" value="" checked="@Model.backlog.Tables[1].Rows[i]["PreTriageStatus"]" /></td>
+
+		@for (int j = 0; j < Model.backlog.Tables[1].Columns.Count; j++)
+		{
+			<td>@Model.backlog.Tables[1].Rows[i][j]</td>
+		}
+	</tr>
 			}
 		</table>
 	</div>
 
 <div id="Optimizers" class="tabcontent">
-	Total Cases : @Model.Tables[2].Rows.Count
+	UnAssigned Cases: @Model.OptimizersUnAssignedCases
+	Assigned Cases: @Model.OptimizersAssignedCases
+	Total Cases : @Model.backlog.Tables[2].Rows.Count
 	<button class="btn btn-success" onclick="ExportToExcel('xlsx','optimizers');">Export</button>
 	<table id="optimizers" class="table table-bordered table-responsive table-striped sortable">
 		<thead class="table-dark">
-			@for (int ii = 0; ii < Model.Tables[2].Columns.Count; ii++)
+			<TD>Pretriage Status</TD>
+			@for (int ii = 0; ii < Model.backlog.Tables[2].Columns.Count; ii++)
 			{
-			<TD onclick="sortTable(@ii,'optimizers')">@Model.Tables[2].Columns[ii].ColumnName</TD>
+<TD onclick="sortTable(@ii+1,'optimizers')">@Model.backlog.Tables[2].Columns[ii].ColumnName</TD>
 		}
 			</thead>
-			@for (int i = 0; i < Model.Tables[2].Rows.Count; i++)
+			@for (int i = 0; i < Model.backlog.Tables[2].Rows.Count; i++)
 			{
-				<tr>
-					@for (int j = 0; j < Model.Tables[2].Columns.Count; j++)
-					{
-						<td>@Model.Tables[2].Rows[i][j]</td>
-					}
-				</tr>
+	<tr>
+		<td><input type="checkbox" value="" checked="@Model.backlog.Tables[2].Rows[i]["PreTriageStatus"]" /></td>
+
+		@for (int j = 0; j < Model.backlog.Tables[2].Columns.Count; j++)
+		{
+			<td>@Model.backlog.Tables[2].Rows[i][j]</td>
+		}
+	</tr>
 			}
 		</table>
 	</div>
@@ -212,6 +231,7 @@ new SelectListItem{ Text="DCHA.3.Architect.AMS.Base", Value = "DCHA.3.Architect.
 				}
 
 	function callChangefunc(val) {
-		window.location.href = "/?gname="+val;
+		window.location.href = "/?gname=" + val;
+
 				}
 			</script>

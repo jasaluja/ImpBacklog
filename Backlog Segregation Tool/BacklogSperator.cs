@@ -3,25 +3,48 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Data;
+using Backlog_Segregation_Tool.Models;
+
 namespace Backlog_Segregation_Tool
 {
 	public class BacklogSperator
 	{
 		public DataTable filtered_data;
 		public DataTable challangers = new DataTable();
+		public BacklogDataModel backlogData = new BacklogDataModel();
 		public DataTable optimizers = new DataTable();
 		public DataTable restdata = new DataTable();
 		public DataTable diplomets { set; get; } = new DataTable();
+		public int OptimizersAssignedCases { set; get; } = 0;
+		public int OptimizersUnAssignedCases { set; get; } = 0;
+		public int ChallangerAssignedCases { set; get; } = 0;
+		public int ChallangerUnAssignedCases { set; get; } = 0;
+		public int DiplometsAssignedCases { set; get; } = 0;
+		public int DiplometsUnAssignedCases { set; get; } = 0;
 		public BacklogSperator(DataTable dataTable)
 		{
 			filtered_data = dataTable;
 		}
-
-		public DataTable getDiplomatsCases(String[] FINames)
+		public BacklogDataModel getSepratedBacklog()
+		{
+			DataSet dataSet = new DataSet();
+			dataSet.Tables.Add(diplomets);
+			dataSet.Tables.Add(challangers);
+			dataSet.Tables.Add(optimizers);
+			backlogData.backlog = dataSet;
+			backlogData.ChallangerUnAssignedCases = ChallangerUnAssignedCases;
+			backlogData.ChallangerAssignedCases = ChallangerAssignedCases;
+			backlogData.DiplometsUnAssignedCases = DiplometsUnAssignedCases;
+			backlogData.DiplometsAssignedCases = DiplometsAssignedCases;
+			backlogData.OptimizersAssignedCases = OptimizersAssignedCases;
+			backlogData.OptimizersUnAssignedCases = OptimizersUnAssignedCases;
+			return backlogData;
+		}
+		public void getDiplomatsCases(String[] FINames)
 		{
 			if (FINames == null)
 			{
-				return new DataTable();
+				return;
 			}
 
 
@@ -54,7 +77,9 @@ namespace Backlog_Segregation_Tool
 				}
 
 			}
-			return diplomets;
+			DiplometsUnAssignedCases=diplomets.AsEnumerable().Where(p => String.IsNullOrWhiteSpace(p.Field<string>("Assigned to"))).Count();
+			DiplometsAssignedCases = diplomets.Rows.Count - DiplometsUnAssignedCases;
+			return;
 		}
 
 		public void getChallangersCases(int MaxNumberOfDays)
@@ -77,12 +102,17 @@ namespace Backlog_Segregation_Tool
 				if (days < MaxNumberOfDays)
 				{
 					challangers.ImportRow(restdata.Rows[i]);
+
 				}
 				else
 				{
 					optimizers.ImportRow(restdata.Rows[i]);
 				}
 			}
+			ChallangerUnAssignedCases= challangers.AsEnumerable().Where(p => String.IsNullOrWhiteSpace(p.Field<string>("Assigned to"))).Count();
+			ChallangerAssignedCases = challangers.Rows.Count - ChallangerUnAssignedCases;
+			OptimizersUnAssignedCases = optimizers.AsEnumerable().Where(p => String.IsNullOrWhiteSpace(p.Field<string>("Assigned to"))).Count();
+			OptimizersAssignedCases = optimizers.Rows.Count - OptimizersUnAssignedCases;
 			return;
 		}
 	}
