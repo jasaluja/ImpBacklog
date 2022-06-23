@@ -52,11 +52,12 @@ new SelectListItem{ Text="DCHA.3.Architect.AMS.Base", Value = "DCHA.3.Architect.
 	</table>
 	
 </div>
+
 <div class="tab">
 	<button class="tablinks active" onclick="openTab(event, 'Diplomets')">Diplomets</button>
 	<button class="tablinks" onclick="openTab(event, 'Challangers')">Challangers</button>
 	<button class="tablinks" onclick="openTab(event, 'Optimizers')">Optimizers</button>
-
+	
 
 </div>
 <div id="Diplomets" style="display:block" class="tabcontent">
@@ -76,7 +77,7 @@ new SelectListItem{ Text="DCHA.3.Architect.AMS.Base", Value = "DCHA.3.Architect.
 			@for (int i = 0; i < Model.backlog.Tables[0].Rows.Count; i++)
 			{
 				<tr>
-					<td><input type="checkbox" value="" checked="@Model.backlog.Tables[0].Rows[i]["PreTriageStatus"]" /></td>
+					<td><input type="checkbox" value="" checked="@Model.backlog.Tables[0].Rows[i]["PreTriageStatus"]" disabled/></td>
 					@for (int j = 0; j < Model.backlog.Tables[0].Columns.Count - 1; j++)
 					{
 						<td>@Model.backlog.Tables[0].Rows[i][j]</td>
@@ -98,7 +99,7 @@ new SelectListItem{ Text="DCHA.3.Architect.AMS.Base", Value = "DCHA.3.Architect.
 	<table id="challangers" class="table table-bordered table-responsive table-striped sortable">
 		<thead class="table-dark">
 			<TD>Pretriage Status</TD>
-			@for (int ii = 0; ii < Model.backlog.Tables[1].Columns.Count; ii++)
+			@for (int ii = 0; ii < Model.backlog.Tables[1].Columns.Count-1; ii++)
 			{
 			<TD onclick="sortTable(@ii+1,'challangers')">@Model.backlog.Tables[1].Columns[ii].ColumnName</TD>
 		}
@@ -106,9 +107,9 @@ new SelectListItem{ Text="DCHA.3.Architect.AMS.Base", Value = "DCHA.3.Architect.
 			@for (int i = 0; i < Model.backlog.Tables[1].Rows.Count; i++)
 			{
 	<tr>
-		<td><input type="checkbox" value="" checked="@Model.backlog.Tables[1].Rows[i]["PreTriageStatus"]" /></td>
+		<td><input type="checkbox" value="" checked="@Model.backlog.Tables[1].Rows[i]["PreTriageStatus"]" disabled /></td>
 
-		@for (int j = 0; j < Model.backlog.Tables[1].Columns.Count; j++)
+		@for (int j = 0; j < Model.backlog.Tables[1].Columns.Count-1; j++)
 		{
 			<td>@Model.backlog.Tables[1].Rows[i][j]</td>
 		}
@@ -125,7 +126,7 @@ new SelectListItem{ Text="DCHA.3.Architect.AMS.Base", Value = "DCHA.3.Architect.
 	<table id="optimizers" class="table table-bordered table-responsive table-striped sortable">
 		<thead class="table-dark">
 			<TD>Pretriage Status</TD>
-			@for (int ii = 0; ii < Model.backlog.Tables[2].Columns.Count; ii++)
+			@for (int ii = 0; ii < Model.backlog.Tables[2].Columns.Count-1; ii++)
 			{
 <TD onclick="sortTable(@ii+1,'optimizers')">@Model.backlog.Tables[2].Columns[ii].ColumnName</TD>
 		}
@@ -133,9 +134,9 @@ new SelectListItem{ Text="DCHA.3.Architect.AMS.Base", Value = "DCHA.3.Architect.
 			@for (int i = 0; i < Model.backlog.Tables[2].Rows.Count; i++)
 			{
 	<tr>
-		<td><input type="checkbox" value="" checked="@Model.backlog.Tables[2].Rows[i]["PreTriageStatus"]" /></td>
+		<td><input type="checkbox" value="" checked="@Model.backlog.Tables[2].Rows[i]["PreTriageStatus"]" disabled /></td>
 
-		@for (int j = 0; j < Model.backlog.Tables[2].Columns.Count; j++)
+		@for (int j = 0; j < Model.backlog.Tables[2].Columns.Count-1; j++)
 		{
 			<td>@Model.backlog.Tables[2].Rows[i][j]</td>
 		}
@@ -234,4 +235,5 @@ new SelectListItem{ Text="DCHA.3.Architect.AMS.Base", Value = "DCHA.3.Architect.
 		window.location.href = "/?gname=" + val;
 
 				}
+	
 			</script>
