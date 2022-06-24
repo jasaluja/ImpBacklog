@@ -5,6 +5,7 @@
 		overflow: hidden;
 		border: 1px solid #ccc;
 		background-color: #f1f1f1;
+		width:100%;
 	}
 
 		/* Style the buttons that are used to open the tab content */
@@ -27,44 +28,53 @@
 			.tab button.active {
 				background-color: #ccc;
 			}
-
+	.center {
+		margin-left: auto;
+		margin-right: auto;
+	}
 	/* Style the tab content */
 	.tabcontent {
 		display: none;
 	}
 </style>
-<div>
-	<table>
-		<tr><td>Group Name:</td>
-		<td>
-			
-	@Html.DropDownList("Group Name", new List<SelectListItem>
-{
-new SelectListItem{ Text="DCHA.3.Architect.AMS.Imp", Value = "DCHA.3.Architect.AMS.Imp",Selected=Model.IsImpSelected },
-new SelectListItem{ Text="DCHA.3.Architect.AMS.Base", Value = "DCHA.3.Architect.AMS.Base",Selected=Model.IsBaseSelected }
-}, new
-{
-	@onchange = "callChangefunc(this.value)"
-}
-)
-</td>
-		</tr>
-	</table>
-	
-</div>
+
+	<div>
+		<table class="center">
+			<tr>
+				<td>Group Name:</td>
+				<td>
+
+					@Html.DropDownList("Group Name", new List<SelectListItem>
+				{
+				new SelectListItem{ Text="DCHA.3.Architect.AMS.Imp", Value = "DCHA.3.Architect.AMS.Imp",Selected=Model.IsImpSelected },
+				new SelectListItem{ Text="DCHA.3.Architect.AMS.Base", Value = "DCHA.3.Architect.AMS.Base",Selected=Model.IsBaseSelected }
+				}, new
+				{
+					@onchange = "callChangefunc(this.value)"
+				}
+				)
+				</td>
+			</tr>
+		</table>
+
+	</div>
+
+<br/>
 
 <div class="tab">
 	<button class="tablinks active" onclick="openTab(event, 'Diplomets')">Diplomets</button>
 	<button class="tablinks" onclick="openTab(event, 'Challangers')">Challangers</button>
 	<button class="tablinks" onclick="openTab(event, 'Optimizers')">Optimizers</button>
 	
-
 </div>
 <div id="Diplomets" style="display:block" class="tabcontent">
-	UnAssigned Cases: @Model.DiplometsUnAssignedCases
-	Assigned Cases: @Model.DiplometsAssignedCases
-	Total Cases : @Model.backlog.Tables[0].Rows.Count
-	<button class="btn btn-success" onclick="ExportToExcel('xlsx','diplomets');">Export</button>
+	
+		<span>UnAssigned Cases: @Model.DiplometsUnAssignedCases</span>
+
+	<span>Assigned Cases: @Model.DiplometsAssignedCases</span>
+	<span>Total Cases : @Model.backlog.Tables[0].Rows.Count</span>
+		
+	<button class="btn btn-success" style="float:right" onclick="ExportToExcel('xlsx','diplomets');">Export</button>
 	<table id="diplomets" class="table table-bordered table-responsive table-striped sortable">
 		<thead class="table-dark">
 			<TD>Pretriage Status</TD>
@@ -77,7 +87,7 @@ new SelectListItem{ Text="DCHA.3.Architect.AMS.Base", Value = "DCHA.3.Architect.
 			@for (int i = 0; i < Model.backlog.Tables[0].Rows.Count; i++)
 			{
 				<tr>
-					<td><input type="checkbox" value="" checked="@Model.backlog.Tables[0].Rows[i]["PreTriageStatus"]" disabled/></td>
+					<td>@Model.backlog.Tables[0].Rows[i]["PreTriageStatus"]</td>
 					@for (int j = 0; j < Model.backlog.Tables[0].Columns.Count - 1; j++)
 					{
 						<td>@Model.backlog.Tables[0].Rows[i][j]</td>
@@ -95,7 +105,7 @@ new SelectListItem{ Text="DCHA.3.Architect.AMS.Base", Value = "DCHA.3.Architect.
 	UnAssigned Cases: @Model.ChallangerUnAssignedCases
 	Assigned Cases: @Model.ChallangerAssignedCases
 	Total Cases : @Model.backlog.Tables[1].Rows.Count
-	<button class="btn btn-success" onclick="ExportToExcel('xlsx','challangers');">Export</button>
+	<button class="btn btn-success" style="float:right" onclick="ExportToExcel('xlsx','challangers');">Export</button>
 	<table id="challangers" class="table table-bordered table-responsive table-striped sortable">
 		<thead class="table-dark">
 			<TD>Pretriage Status</TD>
@@ -107,7 +117,7 @@ new SelectListItem{ Text="DCHA.3.Architect.AMS.Base", Value = "DCHA.3.Architect.
 			@for (int i = 0; i < Model.backlog.Tables[1].Rows.Count; i++)
 			{
 	<tr>
-		<td><input type="checkbox" value="" checked="@Model.backlog.Tables[1].Rows[i]["PreTriageStatus"]" disabled /></td>
+		<td>@Model.backlog.Tables[1].Rows[i]["PreTriageStatus"]</td>
 
 		@for (int j = 0; j < Model.backlog.Tables[1].Columns.Count-1; j++)
 		{
@@ -119,10 +129,10 @@ new SelectListItem{ Text="DCHA.3.Architect.AMS.Base", Value = "DCHA.3.Architect.
 	</div>
 
 <div id="Optimizers" class="tabcontent">
-	UnAssigned Cases: @Model.OptimizersUnAssignedCases
+	 UnAssigned Cases: @Model.OptimizersUnAssignedCases
 	Assigned Cases: @Model.OptimizersAssignedCases
 	Total Cases : @Model.backlog.Tables[2].Rows.Count
-	<button class="btn btn-success" onclick="ExportToExcel('xlsx','optimizers');">Export</button>
+	<button class="btn btn-success" style="float:right" onclick="ExportToExcel('xlsx','optimizers');">Export</button>
 	<table id="optimizers" class="table table-bordered table-responsive table-striped sortable">
 		<thead class="table-dark">
 			<TD>Pretriage Status</TD>
@@ -134,7 +144,7 @@ new SelectListItem{ Text="DCHA.3.Architect.AMS.Base", Value = "DCHA.3.Architect.
 			@for (int i = 0; i < Model.backlog.Tables[2].Rows.Count; i++)
 			{
 	<tr>
-		<td><input type="checkbox" value="" checked="@Model.backlog.Tables[2].Rows[i]["PreTriageStatus"]" disabled /></td>
+		<td> @Model.backlog.Tables[2].Rows[i]["PreTriageStatus"] </td>
 
 		@for (int j = 0; j < Model.backlog.Tables[2].Columns.Count-1; j++)
 		{

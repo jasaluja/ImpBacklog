@@ -25,7 +25,7 @@ namespace Backlog_Segregation_Tool.BusinessLogic
 
 		public static DataTable AddPreTriageStatusColumn(DataTable backlog)
 		{
-			backlog.Columns.Add("PreTriageStatus", typeof(bool));
+			backlog.Columns.Add("PreTriageStatus", typeof(String));
 			foreach (var data in backlog.AsEnumerable())
 			{
 				String tag = data.Field<String>("Tag");
@@ -34,13 +34,13 @@ namespace Backlog_Segregation_Tool.BusinessLogic
 					if (tag.ToLower().Contains("PretriageAccepted".ToLower()))
 					{
 						data.BeginEdit();
-						data["PreTriageStatus"] = true;
+						data["PreTriageStatus"] = "Accepted";
 						data.EndEdit();
 					}
 					else
 					{
 						data.BeginEdit();
-						data["PreTriageStatus"] = false;
+						data["PreTriageStatus"] = "";
 						data.EndEdit();
 					}
 
@@ -48,7 +48,7 @@ namespace Backlog_Segregation_Tool.BusinessLogic
 				else
 				{
 					data.BeginEdit();
-					data["PreTriageStatus"] = false;
+					data["PreTriageStatus"] = "";
 					data.EndEdit();
 				}
 			}
