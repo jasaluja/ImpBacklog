@@ -18,31 +18,40 @@ namespace Backlog_Segregation_Tool.Controllers
 		private readonly IConfiguration _config;
 		public DataSet backlog = new DataSet();
 		public BacklogDataModel backlogData = new BacklogDataModel();
-
-		public String[] ColumnsOrder;
-		public String[] diplometsClients;
-		public String ChallangerTag;
-		public int ChallangersMaxDays;
+		public String Excel_path;
+		
 		public HomeController(IConfiguration configuration)
 		{
 			_config = configuration;
-			diplometsClients = _config.GetSection("DiplometsClients").Get<List<string>>().ToArray();
-			ChallangerTag = _config.GetSection("ChallangerTag").Value.ToString();
-			ChallangersMaxDays =Convert.ToInt32(_config.GetSection("ChallangersMaxDays").Value.ToString());
-			ColumnsOrder = _config.GetSection("ColumnsOrder").Get<List<string>>().ToArray();
+			
 		}
 
 		public IActionResult Index(String gname = "DCHA.3.Architect.AMS.Imp")
 		{
-			var path = _config.GetSection("Excel_path").Value;
-			ExcelReader excelReader = new ExcelReader(path,gname);
+			if (!String.IsNullOrEmpty(_config.GetSection("Excel_path").Value)) { 
+				Excel_path = _config.GetSection("Excel_path").Value;
+			}
+			else
+			{
+				return Error("Excel path is not available");
+			}
+			try
+			{
+				Utility.ValidateConfig(_config);
+			}catch(Exception e)
+			{
+				return Error(e.Message);
+			}
+			ExcelReader excelReader = new ExcelReader(Excel_path,gname);
 			DataTable fdata = excelReader.FilteredData;
-			fdata = Utility.ReOrderTable(fdata,ColumnsOrder);
-			fdata = Utility.AddPreTriageStatusColumn(fdata);
+			
+			//fdata = Utility.AddPreTriageStatusColumn(fdata);
 			BacklogSperator bs = new BacklogSperator(fdata);
-			bs.getDiplomatsCases(diplometsClients);
-			bs.getChallangersCases(ChallangersMaxDays,ChallangerTag);
+			bs.getDiplomatsCases(Utility.diplometsClients,Utility.ColumnsOrder);
+			bs.getChallangersCases(Utility.ChallangersMaxDays, Utility.ChallangerTag,Utility.ColumnsOrder);
+			
 			backlogData = bs.getSepratedBacklog();
+
 			if (gname == "DCHA.3.Architect.AMS.Imp")
 			{
 				backlogData.IsImpSelected = true;
@@ -62,9 +71,9 @@ namespace Backlog_Segregation_Tool.Controllers
 		}
 
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-		public IActionResult Error()
+		public IActionResult Error(String error)
 		{
-			return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+			return View("~/Views/Shared/Error.cshtml",new ErrorViewModel { ErrorMessage=error});
 		}
 	}
 }

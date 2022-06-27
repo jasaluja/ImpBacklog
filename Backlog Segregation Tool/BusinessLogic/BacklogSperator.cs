@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Data;
 using Backlog_Segregation_Tool.Models;
+using Backlog_Segregation_Tool.BusinessLogic;
 
 namespace Backlog_Segregation_Tool
 {
@@ -40,7 +41,7 @@ namespace Backlog_Segregation_Tool
 			backlogData.OptimizersUnAssignedCases = OptimizersUnAssignedCases;
 			return backlogData;
 		}
-		public void getDiplomatsCases(String[] FINames)
+		public void getDiplomatsCases(String[] FINames,String[] columnOrder)
 		{
 			if (FINames == null)
 			{
@@ -77,12 +78,14 @@ namespace Backlog_Segregation_Tool
 				}
 
 			}
+			diplomets=Utility.ReOrderTable(diplomets, columnOrder);
+			diplomets = Utility.AddPreTriageStatusColumn(diplomets);
 			DiplometsUnAssignedCases=diplomets.AsEnumerable().Where(p => String.IsNullOrWhiteSpace(p.Field<string>("Assigned to"))).Count();
 			DiplometsAssignedCases = diplomets.Rows.Count - DiplometsUnAssignedCases;
 			return;
 		}
 
-		public void getChallangersCases(int MaxNumberOfDays,String ChallangersTag)
+		public void getChallangersCases(int MaxNumberOfDays,String ChallangersTag,String[] columnOrder)
 		
 		{
 			
@@ -116,7 +119,11 @@ namespace Backlog_Segregation_Tool
 					optimizers.ImportRow(restdata.Rows[i]);
 				}
 			}
-			ChallangerUnAssignedCases= challangers.AsEnumerable().Where(p => String.IsNullOrWhiteSpace(p.Field<string>("Assigned to"))).Count();
+			challangers = Utility.ReOrderTable(challangers, columnOrder);
+			optimizers = Utility.ReOrderTable(optimizers, columnOrder);
+			challangers = Utility.AddPreTriageStatusColumn(challangers);
+			optimizers = Utility.AddPreTriageStatusColumn(optimizers);
+			ChallangerUnAssignedCases = challangers.AsEnumerable().Where(p => String.IsNullOrWhiteSpace(p.Field<string>("Assigned to"))).Count();
 			ChallangerAssignedCases = challangers.Rows.Count - ChallangerUnAssignedCases;
 			OptimizersUnAssignedCases = optimizers.AsEnumerable().Where(p => String.IsNullOrWhiteSpace(p.Field<string>("Assigned to"))).Count();
 			OptimizersAssignedCases = optimizers.Rows.Count - OptimizersUnAssignedCases;
