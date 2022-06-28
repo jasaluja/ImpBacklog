@@ -28,6 +28,8 @@ namespace Backlog_Segregation_Tool.Controllers
 
 		public IActionResult Index(String gname = "DCHA.3.Architect.AMS.Imp")
 		{
+			try
+			{
 			if (!String.IsNullOrEmpty(_config.GetSection("Excel_path").Value)) { 
 				Excel_path = _config.GetSection("Excel_path").Value;
 			}
@@ -35,22 +37,16 @@ namespace Backlog_Segregation_Tool.Controllers
 			{
 				return Error("Excel path is not available");
 			}
-			try
-			{
+			
 				Utility.ValidateConfig(_config);
-			}catch(Exception e)
-			{
-				return Error(e.Message);
-			}
+			
 			ExcelReader excelReader = new ExcelReader(Excel_path,gname);
 			DataTable fdata = excelReader.FilteredData;
+			BacklogSperator.filtered_data = fdata;
+			BacklogSperator.getDiplomatsCases(Utility.diplometsClients,Utility.ColumnsOrder);
+		    BacklogSperator.getChallangersCases(Utility.ChallangersMaxDays, Utility.ChallangerTag,Utility.ColumnsOrder);
 			
-			//fdata = Utility.AddPreTriageStatusColumn(fdata);
-			BacklogSperator bs = new BacklogSperator(fdata);
-			bs.getDiplomatsCases(Utility.diplometsClients,Utility.ColumnsOrder);
-			bs.getChallangersCases(Utility.ChallangersMaxDays, Utility.ChallangerTag,Utility.ColumnsOrder);
-			
-			backlogData = bs.getSepratedBacklog();
+			backlogData = BacklogSperator.getSepratedBacklog();
 
 			if (gname == "DCHA.3.Architect.AMS.Imp")
 			{
@@ -61,6 +57,11 @@ namespace Backlog_Segregation_Tool.Controllers
 			{
 				backlogData.IsImpSelected = false;
 				backlogData.IsBaseSelected = true;
+			}
+			}
+			catch (Exception e)
+			{
+				return Error(e.Message);
 			}
 			return View(backlogData);
 		}

@@ -8,25 +8,25 @@ using Backlog_Segregation_Tool.BusinessLogic;
 
 namespace Backlog_Segregation_Tool
 {
-	public class BacklogSperator
+	public static class BacklogSperator
 	{
-		public DataTable filtered_data;
-		public DataTable challangers = new DataTable();
-		public BacklogDataModel backlogData = new BacklogDataModel();
-		public DataTable optimizers = new DataTable();
-		public DataTable restdata = new DataTable();
-		public DataTable diplomets { set; get; } = new DataTable();
-		public int OptimizersAssignedCases { set; get; } = 0;
-		public int OptimizersUnAssignedCases { set; get; } = 0;
-		public int ChallangerAssignedCases { set; get; } = 0;
-		public int ChallangerUnAssignedCases { set; get; } = 0;
-		public int DiplometsAssignedCases { set; get; } = 0;
-		public int DiplometsUnAssignedCases { set; get; } = 0;
-		public BacklogSperator(DataTable dataTable)
+		public static DataTable filtered_data;
+		public static DataTable challangers = new DataTable();
+		public static BacklogDataModel backlogData = new BacklogDataModel();
+		public static DataTable optimizers = new DataTable();
+		public static DataTable restdata = new DataTable();
+		public static DataTable diplomets { set; get; } = new DataTable();
+		public static int OptimizersAssignedCases { set; get; } = 0;
+		public static int OptimizersUnAssignedCases { set; get; } = 0;
+		public static int ChallangerAssignedCases { set; get; } = 0;
+		public static int ChallangerUnAssignedCases { set; get; } = 0;
+		public static int DiplometsAssignedCases { set; get; } = 0;
+		public static int DiplometsUnAssignedCases { set; get; } = 0;
+		 static BacklogSperator()
 		{
-			filtered_data = dataTable;
+			
 		}
-		public BacklogDataModel getSepratedBacklog()
+		public static BacklogDataModel getSepratedBacklog()
 		{
 			DataSet dataSet = new DataSet();
 			dataSet.Tables.Add(diplomets);
@@ -41,7 +41,7 @@ namespace Backlog_Segregation_Tool
 			backlogData.OptimizersUnAssignedCases = OptimizersUnAssignedCases;
 			return backlogData;
 		}
-		public void getDiplomatsCases(String[] FINames,String[] columnOrder)
+		public static void getDiplomatsCases(String[] FINames,String[] columnOrder)
 		{
 			if (FINames == null)
 			{
@@ -85,7 +85,7 @@ namespace Backlog_Segregation_Tool
 			return;
 		}
 
-		public void getChallangersCases(int MaxNumberOfDays,String ChallangersTag,String[] columnOrder)
+		public static void getChallangersCases(int MaxNumberOfDays,String ChallangersTag,String[] columnOrder)
 		
 		{
 			
