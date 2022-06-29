@@ -9,21 +9,24 @@ using Microsoft.Extensions.Configuration;
 using System.Data;
 using Backlog_Segregation_Tool.Models;
 using Backlog_Segregation_Tool.BusinessLogic;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Backlog_Segregation_Tool.Controllers
 {
 	public class HomeController : Controller
 	{
+		private readonly IMemoryCache _memoryCache;
 		private readonly ILogger<HomeController> _logger;
 		private readonly IConfiguration _config;
 		public DataSet backlog = new DataSet();
+		public DataTable fdata = new DataTable();
 		public BacklogDataModel backlogData = new BacklogDataModel();
 		public String Excel_path;
 		
-		public HomeController(IConfiguration configuration)
+		public HomeController(IConfiguration configuration,IMemoryCache _cache)
 		{
 			_config = configuration;
-			
+			_memoryCache = _cache;
 		}
 
 		public IActionResult Index(String gname = "DCHA.3.Architect.AMS.Imp")
@@ -39,9 +42,15 @@ namespace Backlog_Segregation_Tool.Controllers
 			}
 			
 				Utility.ValidateConfig(_config);
+				if (!_memoryCache.TryGetValue(gname, out DataTable fdata))
+				{
+					ExcelReader excelReader = new ExcelReader(Excel_path, gname);
+					fdata = excelReader.FilteredData;
+					_memoryCache.Set(gname, fdata);
+				
+				}
 			
-			ExcelReader excelReader = new ExcelReader(Excel_path,gname);
-			DataTable fdata = excelReader.FilteredData;
+			
 			BacklogSperator.filtered_data = fdata;
 			BacklogSperator.getDiplomatsCases(Utility.diplometsClients,Utility.ColumnsOrder);
 		    BacklogSperator.getChallangersCases(Utility.ChallangersMaxDays, Utility.ChallangerTag,Utility.ColumnsOrder);
