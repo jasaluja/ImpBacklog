@@ -27,6 +27,7 @@ namespace Backlog_Segregation_Tool
 		{
 			services.AddControllersWithViews();
 			services.AddMemoryCache();
+		
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

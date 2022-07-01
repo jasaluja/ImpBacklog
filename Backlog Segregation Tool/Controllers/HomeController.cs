@@ -49,8 +49,6 @@ namespace Backlog_Segregation_Tool.Controllers
 					_memoryCache.Set(gname, fdata);
 				
 				}
-			
-			
 			BacklogSperator.filtered_data = fdata;
 			BacklogSperator.getDiplomatsCases(Utility.diplometsClients,Utility.ColumnsOrder);
 		    BacklogSperator.getChallangersCases(Utility.ChallangersMaxDays, Utility.ChallangerTag,Utility.ColumnsOrder);
@@ -75,10 +73,7 @@ namespace Backlog_Segregation_Tool.Controllers
 			return View(backlogData);
 		}
 
-		public IActionResult Privacy()
-		{
-			return View();
-		}
+		
 
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
 		public IActionResult Error(String error)
