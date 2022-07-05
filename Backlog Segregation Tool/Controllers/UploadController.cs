@@ -7,16 +7,19 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Backlog_Segregation_Tool.Controllers
 {
 	public class UploadController : Controller
 	{
         IConfiguration _config;
+        IMemoryCache _cache;
         String path;
-		public UploadController(IConfiguration configuration)
+		public UploadController(IConfiguration configuration,IMemoryCache memoryCache)
 		{
             _config = configuration;
+            _cache = memoryCache;
 		}
 		public IActionResult Index()
 		{
@@ -25,7 +28,7 @@ namespace Backlog_Segregation_Tool.Controllers
        
 
            [HttpPost]
-            public async Task<IActionResult> Index(IFormFile file)
+            public IActionResult Index(IFormFile file)
             {
                 long size = file.Length;
 
@@ -39,9 +42,11 @@ namespace Backlog_Segregation_Tool.Controllers
                 
                         using (var stream = new FileStream(filePath, FileMode.Create))
                         {
-                            await file.CopyToAsync(stream);
+                             file.CopyTo(stream);
                         }
-                    }
+                _cache.Remove("DCHA.3.Architect.AMS.Imp");
+                _cache.Remove("DCHA.3.Architect.AMS.Base");
+            }
 
 
             // process uploaded files
