@@ -1,6 +1,18 @@
 ﻿@model BacklogDataModel
+	<script src="~/lib/jquery/dist/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" />
+	<script type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
+	<script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.12.1/sorting/datetime-moment.js"></script>
 
-
+	<script>
+		$(document).ready(function () {
+			$.fn.dataTable.moment('mm/dd/YYYY hh:ii:ss');
+			$('#challangers').DataTable();
+			$('#diplomets').DataTable();
+			$('#optimizers').DataTable();
+		});
+	</script>
 	<div>
 		<table class="center">
 			<tr>
@@ -22,113 +34,120 @@
 
 	</div>
 
-<br/>
+	<br />
 
-<div class="tab">
-	<button class="tablinks active font-weight-bold" onclick="openTab(event, 'Challangers')">Challangers</button>
-	<button class="tablinks font-weight-bold" onclick="openTab(event, 'Diplomets')">Diplomets</button>
-	<button class="tablinks font-weight-bold" onclick="openTab(event, 'Optimizers')">Optimizers</button>
+	<div class="tab">
+		<button class="tablinks active font-weight-bold" onclick="openTab(event, 'ChallangersTab')">Challangers</button>
+		<button class="tablinks font-weight-bold" onclick="openTab(event, 'DiplometsTab')">Diplomets</button>
+		<button class="tablinks font-weight-bold" onclick="openTab(event, 'OptimizersTab')">Optimizers</button>
 
-</div>
-<div class="shadow">
-
-	<div id="Challangers"  style="display:block" class="tabcontent">
-		<div class="w-100 clearfix">
-			<div class="d-inline font-weight-bold">
-				<span class="text-danger p-2">
-					UnAssigned Cases: @Model.ChallangerUnAssignedCases
-				</span>
-				<span class="text-success p-2">Assigned Cases: @Model.ChallangerAssignedCases</span>
-				<span class="text-primary p-2">Total Cases : @Model.backlog.Tables[1].Rows.Count</span>
-			</div>
-			<button class="btn btn-success right font-weight-bold" onclick="ExportToExcel('xlsx','challangers');">Export</button>
-		</div>
-		<table id="challangers" class="sortable table table-striped table-bordered">
-			<thead class="table-dark">
-			<th class="no-sort">Pre-Triage Status</th>
-			@for (int ii = 0; ii < Model.backlog.Tables[1].Columns.Count - 1; ii++)
-			{
-			<th><button>@Model.backlog.Tables[1].Columns[ii].ColumnName <span aria-hidden="true"></span> </button></th>
-			}
-			</thead>
-
-			@for (int i = 0; i < Model.backlog.Tables[1].Rows.Count; i++)
-			{
-			<tr>
-				<td>@Model.backlog.Tables[1].Rows[i]["PreTriageStatus"]</td>
-
-				@for (int j = 0; j < Model.backlog.Tables[1].Columns.Count - 1; j++)
-					{
-				<td>@Model.backlog.Tables[1].Rows[i][j]</td>
-					}
-			</tr>
-			}
-		</table>
 	</div>
-	<div id="Diplomets" class="tabcontent mb-2">
-		<div class="w-100 clearfix">
-			<div class="d-inline font-weight-bold">
+	<div class="shadow">
 
-				<span class="text-danger p-2">UnAssigned Cases: @Model.DiplometsUnAssignedCases</span>
-				<span class="text-success p-2">Assigned Cases: @Model.DiplometsAssignedCases</span>
-				<span class="text-info p-2">Total Cases : @Model.backlog.Tables[0].Rows.Count</span>
+		<div id="ChallangersTab" style="display:block" class="tabcontent">
+			<div class="w-100 clearfix">
+				<div class="d-inline font-weight-bold">
+					<span class="text-danger p-2">
+						UnAssigned Cases: @Model.ChallangerUnAssignedCases
+					</span>
+					<span class="text-success p-2">Assigned Cases: @Model.ChallangerAssignedCases</span>
+					<span class="text-primary p-2">Total Cases : @Model.backlog.Tables[1].Rows.Count</span>
+				</div>
+				<button class="btn btn-success right font-weight-bold" onclick="ExportToExcel('xlsx','challangers');">Export</button>
 			</div>
-			<button class="btn btn-success right font-weight-bold" onclick="ExportToExcel('xlsx','diplomets');">Export</button>
-		</div>
-		<table id="diplomets" class="sortable table table-striped table-bordered">
-			<thead class="table-dark">
-			<TD>Pre-Triage Status</TD>
-			@for (int ii = 0; ii < Model.backlog.Tables[0].Columns.Count - 1; ii++)
-			{
-		<th><button>@Model.backlog.Tables[0].Columns[ii].ColumnName <span aria-hidden="true"></span> </button></th>			}
-			</thead>
+			<table id="challangers" class="display">
+				<thead class="table-dark">
+				<th>Pre-Triage Status</th>
+				@for (int ii = 0; ii < Model.backlog.Tables[1].Columns.Count - 1; ii++)
+				{
+					<th>@Model.backlog.Tables[1].Columns[ii].ColumnName</th>
+				}
+				</thead>
+				<tbody>
 
-			@for (int i = 0; i < Model.backlog.Tables[0].Rows.Count; i++)
-			{
-				<tr>
-					<td>@Model.backlog.Tables[0].Rows[i]["PreTriageStatus"]</td>
-					@for (int j = 0; j < Model.backlog.Tables[0].Columns.Count - 1; j++)
+					@for (int i = 0; i < Model.backlog.Tables[1].Rows.Count; i++)
 					{
-						<td>@Model.backlog.Tables[0].Rows[i][j]</td>
+						<tr>
+							<td>@Model.backlog.Tables[1].Rows[i]["PreTriageStatus"]</td>
+
+							@for (int j = 0; j < Model.backlog.Tables[1].Columns.Count - 1; j++)
+							{
+								<td>@Model.backlog.Tables[1].Rows[i][j]</td>
+							}
+						</tr>
 					}
+				</tbody>
+			</table>
+		</div>
+		<div id="DiplometsTab" class="tabcontent mb-2">
+			<div class="w-100 clearfix">
+				<div class="d-inline font-weight-bold">
 
-				</tr>
-
-
-			}
-		</table>
-	</div>
-
-
-
-	<div id="Optimizers" class="tabcontent">
-		<div class="w-100 clearfix">
-			<div class="d-inline font-weight-bold">
-				<span class="text-danger p-2">UnAssigned Cases: @Model.OptimizersUnAssignedCases</span>
-				<span class="text-success p-2"> Assigned Cases: @Model.OptimizersAssignedCases</span>
-				<span class="text-primary p-2">Total Cases : @Model.backlog.Tables[2].Rows.Count</span>
+					<span class="text-danger p-2">UnAssigned Cases: @Model.DiplometsUnAssignedCases</span>
+					<span class="text-success p-2">Assigned Cases: @Model.DiplometsAssignedCases</span>
+					<span class="text-info p-2">Total Cases : @Model.backlog.Tables[0].Rows.Count</span>
+				</div>
+				<button class="btn btn-success right font-weight-bold" onclick="ExportToExcel('xlsx','diplomets');">Export</button>
 			</div>
-			<button class="btn btn-success right font-weight-bold" onclick="ExportToExcel('xlsx','optimizers');">Export</button>
-		</div>
-		<table id="optimizers" class="sortable table table-striped table-bordered">
-			<thead class="table-dark">
-			<TD>Pre-Triage Status</TD>
-			@for (int ii = 0; ii < Model.backlog.Tables[2].Columns.Count - 1; ii++)
-			{
-		<th><button>@Model.backlog.Tables[2].Columns[ii].ColumnName <span aria-hidden="true"></span> </button></th>			}
-			</thead>
-			@for (int i = 0; i < Model.backlog.Tables[2].Rows.Count; i++)
-			{
-				<tr>
-					<td> @Model.backlog.Tables[2].Rows[i]["PreTriageStatus"] </td>
+			<table id="diplomets">
+				<thead class="table-dark">
+				<th>Pre-Triage Status</th>
+				@for (int ii = 0; ii < Model.backlog.Tables[0].Columns.Count - 1; ii++)
+				{
+					<th>
+						@Model.backlog.Tables[0].Columns[ii].ColumnName
+					</th>
 
-					@for (int j = 0; j < Model.backlog.Tables[2].Columns.Count - 1; j++)
+				}
+				</thead>
+				<tbody>
+					@for (int i = 0; i < Model.backlog.Tables[0].Rows.Count; i++)
 					{
-						<td>@Model.backlog.Tables[2].Rows[i][j]</td>
+						<tr>
+							<td>@Model.backlog.Tables[0].Rows[i]["PreTriageStatus"]</td>
+							@for (int j = 0; j < Model.backlog.Tables[0].Columns.Count - 1; j++)
+							{
+								<td>@Model.backlog.Tables[0].Rows[i][j]</td>
+							}
+
+						</tr>
 					}
-				</tr>
-			}
-		</table>
+				</tbody>
+			</table>
+		</div>
+
+
+
+		<div id="OptimizersTab" class="tabcontent">
+			<div class="w-100 clearfix">
+				<div class="d-inline font-weight-bold">
+					<span class="text-danger p-2">UnAssigned Cases: @Model.OptimizersUnAssignedCases</span>
+					<span class="text-success p-2"> Assigned Cases: @Model.OptimizersAssignedCases</span>
+					<span class="text-primary p-2">Total Cases : @Model.backlog.Tables[2].Rows.Count</span>
+				</div>
+				<button class="btn btn-success right font-weight-bold" onclick="ExportToExcel('xlsx','optimizers');">Export</button>
+			</div>
+			<table id="optimizers">
+				<thead class="table-dark">
+				<th>Pre-Triage Status</th>
+				@for (int ii = 0; ii < Model.backlog.Tables[2].Columns.Count - 1; ii++)
+				{
+					<th>@Model.backlog.Tables[2].Columns[ii].ColumnName</th>
+				}
+				</thead>
+				<tbody>
+					@for (int i = 0; i < Model.backlog.Tables[2].Rows.Count; i++)
+					{
+						<tr>
+							<td> @Model.backlog.Tables[2].Rows[i]["PreTriageStatus"] </td>
+
+							@for (int j = 0; j < Model.backlog.Tables[2].Columns.Count - 1; j++)
+							{
+								<td>@Model.backlog.Tables[2].Rows[i][j]</td>
+							}
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
 	</div>
-</div>
-			

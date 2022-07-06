@@ -16,7 +16,32 @@ namespace Backlog_Segregation_Tool
         public DataTable FilteredData;
         IConfiguration configuration;
 
+        public List<String> ValidateExcel(String path,String[] mustColumns)
+        {
+            List<String> errors = new List<String>();
+            using (var stream = File.Open(path, FileMode.Open, FileAccess.Read))
+            {
+                IExcelDataReader reader;
 
+
+                reader = ExcelDataReader.ExcelReaderFactory.CreateOpenXmlReader(stream);
+
+                //// reader.IsFirstRowAsColumnNames
+
+
+                dataSet = reader.AsDataSet(new ExcelDataSetConfiguration()
+                {
+                    ConfigureDataTable = (_) => new ExcelDataTableConfiguration()
+                    {
+                        UseHeaderRow = true
+                    }
+                });
+
+                // Now you can get data from each sheet by its index or its "name"
+                var dataTable = dataSet.Tables[0];
+                return errors;
+            }
+        }
         public ExcelReader(String path, String groupName)
         {
 

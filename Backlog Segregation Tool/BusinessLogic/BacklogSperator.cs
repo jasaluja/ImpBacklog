@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Data;
 using Backlog_Segregation_Tool.Models;
 using Backlog_Segregation_Tool.BusinessLogic;
+using System.Text.RegularExpressions;
 
 namespace Backlog_Segregation_Tool
 {
@@ -59,8 +60,10 @@ namespace Backlog_Segregation_Tool
 				{
 					for (int j = 0; j < FINames.Length; j++)
 					{
-
-						if (filtered_data.Rows[i]["Client Name"].ToString() == FINames[j])
+						String ExcelFIName= Regex.Replace(filtered_data.Rows[i]["Client Name"].ToString(), @"\s", "");
+						String DFIName = Regex.Replace(FINames[j], @"\s", "");
+						
+						if (String.Equals(ExcelFIName,DFIName,StringComparison.OrdinalIgnoreCase))
 						{
 							diplomets.ImportRow(filtered_data.Rows[i]);
 							flag = true;
