@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Caching.Memory;
-
+using Backlog_Segregation_Tool.BusinessLogic;
 namespace Backlog_Segregation_Tool.Controllers
 {
 	public class UploadController : Controller
@@ -37,9 +37,13 @@ namespace Backlog_Segregation_Tool.Controllers
                     if (size > 0)
                     {
                 // full path to file in temp location
-                var filePath = _config.GetSection("Upload_path").Value; //we are using Temp file name just for the example. Add your own file path.
+                String filePath = _config.GetSection("Upload_path").Value; 
                         
-                
+                     if(!ExcelReader.ValidateExcelCoulmns(filePath,new string[] {"jhghh"}))
+				{
+                    return Json("Mandatory columns are missing");
+                    
+				}
                         using (var stream = new FileStream(filePath, FileMode.Create))
                         {
                              file.CopyTo(stream);
@@ -47,8 +51,6 @@ namespace Backlog_Segregation_Tool.Controllers
                 _cache.Remove("DCHA.3.Architect.AMS.Imp");
                 _cache.Remove("DCHA.3.Architect.AMS.Base");
             }
-
-
             // process uploaded files
             // Don't rely on or trust the FileName property without validation.
             
