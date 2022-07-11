@@ -23,9 +23,9 @@ namespace Backlog_Segregation_Tool
 		public static int ChallangerUnAssignedCases { set; get; } = 0;
 		public static int DiplometsAssignedCases { set; get; } = 0;
 		public static int DiplometsUnAssignedCases { set; get; } = 0;
-		 static BacklogSperator()
+		static BacklogSperator()
 		{
-			
+
 		}
 		public static BacklogDataModel getSepratedBacklog()
 		{
@@ -42,7 +42,7 @@ namespace Backlog_Segregation_Tool
 			backlogData.OptimizersUnAssignedCases = OptimizersUnAssignedCases;
 			return backlogData;
 		}
-		public static void getDiplomatsCases(String[] FINames,String[] columnOrder)
+		public static void getDiplomatsCases(String[] FINames, String[] columnOrder)
 		{
 			if (FINames == null)
 			{
@@ -60,10 +60,10 @@ namespace Backlog_Segregation_Tool
 				{
 					for (int j = 0; j < FINames.Length; j++)
 					{
-						String ExcelFIName= Regex.Replace(filtered_data.Rows[i]["Client Name"].ToString(), @"\s", "");
+						String ExcelFIName = Regex.Replace(filtered_data.Rows[i]["Client Name"].ToString(), @"\s", "");
 						String DFIName = Regex.Replace(FINames[j], @"\s", "");
-						
-						if (String.Equals(ExcelFIName,DFIName,StringComparison.OrdinalIgnoreCase))
+
+						if (String.Equals(ExcelFIName, DFIName, StringComparison.OrdinalIgnoreCase))
 						{
 							diplomets.ImportRow(filtered_data.Rows[i]);
 							flag = true;
@@ -81,17 +81,17 @@ namespace Backlog_Segregation_Tool
 				}
 
 			}
-			diplomets=Utility.ReOrderTable(diplomets, columnOrder);
+			diplomets = Utility.ReOrderTable(diplomets, columnOrder);
 			diplomets = Utility.AddPreTriageStatusColumn(diplomets);
-			DiplometsUnAssignedCases=diplomets.AsEnumerable().Where(p => String.IsNullOrWhiteSpace(p.Field<string>("Assigned to"))).Count();
+			DiplometsUnAssignedCases = diplomets.AsEnumerable().Where(p => String.IsNullOrWhiteSpace(p.Field<string>("Assigned to"))).Count();
 			DiplometsAssignedCases = diplomets.Rows.Count - DiplometsUnAssignedCases;
 			return;
 		}
 
-		public static void getChallangersCases(int MaxNumberOfDays,String ChallangersTag,String[] columnOrder)
-		
+		public static void getChallangersCases(int MaxNumberOfDays, String ChallangersTag, String[] columnOrder)
+
 		{
-			
+
 			challangers = filtered_data.Clone();
 			challangers.TableName = "Challangers";
 
@@ -113,7 +113,7 @@ namespace Backlog_Segregation_Tool
 					challangers.ImportRow(restdata.Rows[i]);
 
 				}
-				else if(tags.ToLower().Contains(ChallangersTag.ToLower()))
+				else if (tags.ToLower().Contains(ChallangersTag.ToLower()))
 				{
 					challangers.ImportRow(restdata.Rows[i]);
 				}
@@ -131,6 +131,29 @@ namespace Backlog_Segregation_Tool
 			OptimizersUnAssignedCases = optimizers.AsEnumerable().Where(p => String.IsNullOrWhiteSpace(p.Field<string>("Assigned to"))).Count();
 			OptimizersAssignedCases = optimizers.Rows.Count - OptimizersUnAssignedCases;
 			return;
+		}
+		public static DataTable MapTasksData(DataTable fdata, DataTable tasks_data)
+		{
+			DataTable preTriageData = fdata.Clone();
+			List<String> pre_traigeIPlst = new List<String>();
+			for (int i = 0; i < tasks_data.Rows.Count; i++)
+			{
+				String task_desc = tasks_data.Rows[i]["Task Short Description"].ToString();
+				String task_state = tasks_data.Rows[i]["Task State"].ToString();
+				if(String.Equals(task_desc, "Pre-Triage", StringComparison.OrdinalIgnoreCase)){
+					if (!String.Equals(task_state, "Closed", StringComparison.OrdinalIgnoreCase))
+					{
+						pre_traigeIPlst.Add(tasks_data.Rows[i]["Inquiry Number"].ToString());
+					}
+				}
+			}
+			 preTriageData = (fdata.AsEnumerable().Where(x => pre_traigeIPlst.Contains(x["Inquiry Number"]))).CopyToDataTable();
+			return preTriageData;
+		}
+		public static DataSet SeprateTaskCases(DataTable data)
+		{
+			DataSet ds = new DataSet();
+			return ds;
 		}
 	}
 }

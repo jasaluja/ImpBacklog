@@ -1,4 +1,4 @@
-﻿<form method="post" enctype="multipart/form-data" action="/AMSDefectBacklog/Upload/" onsubmit="AJAXSubmit(this); return false;">
+﻿<form method="post" enctype="multipart/form-data" action="/Upload/" onsubmit="AJAXSubmit(this); return false;">
 	<div class="form-group">
 		<div class="col-md-10">
 			<h3>Upload Excel File</h3>
@@ -7,16 +7,16 @@
 	</div>
 	<div class="form-group">
 		<div class="col-md-10">
-			<input class="btn btn-success" type="submit" value="Upload" />
+			<input id="sbtn" class="btn btn-success" type="submit" value="Upload" />
 		</div>
 	</div>
 </form>
 <div id="result"></div>
 <script>
-
-	
 	async function AJAXSubmit(oFormElement) {
 		var resultElement = document.getElementById("result");
+		document.getElementById("sbtn").disabled = true;
+		resultElement.innerHTML = 'Uploading.....';
 	const formData = new FormData(oFormElement);
 
 	try {
@@ -25,14 +25,22 @@
 	  body: formData
 	});
 
-	if (response.ok) {
-		//	window.location.href = '/Upload/Excel';
-		resultElement.innerHTML = 'File Uploaded Successfully';
-	}
+		if (response.ok) {
+			//	window.location.href = '/Upload/Excel';
+			console.log(response);
+			resultElement.innerHTML=response;
+		} else {
+			resultElement.innerHTML = 'Issue in uploading this file.';
+			document.getElementById("sbtn").disabled = false;
+
+		}
 
 		
 	} catch (error) {
-			console.error('Error:', error);
+		console.error('Error:', error);
+		resultElement.innerHTML = 'Error Occured. Please try again.';
+		document.getElementById("sbtn").disabled = false;
+
 	}
   }
 
