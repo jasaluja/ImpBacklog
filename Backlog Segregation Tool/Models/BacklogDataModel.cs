@@ -19,9 +19,4 @@ namespace Backlog_Segregation_Tool.Models
 		public Boolean IsBaseSelected { set; get; }
 
 	}
-	public class TasksBacklogDataModel
-	{
-		public BacklogDataModel FTDataModel;
-		public BacklogDataModel SwDataModel;
-	}
 }

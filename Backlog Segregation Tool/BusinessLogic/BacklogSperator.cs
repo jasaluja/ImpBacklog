@@ -147,13 +147,26 @@ namespace Backlog_Segregation_Tool
 					}
 				}
 			}
-			 preTriageData = (fdata.AsEnumerable().Where(x => pre_traigeIPlst.Contains(x["Inquiry Number"]))).CopyToDataTable();
+			var rows = fdata.AsEnumerable().Where(x => pre_traigeIPlst.Contains(x["Inquiry Number"]));
+			if (rows.Any())
+			{
+				preTriageData = rows.CopyToDataTable();
+			}
 			return preTriageData;
 		}
-		public static DataSet SeprateTaskCases(DataTable data)
+	
+		public static DataTable FiltereUsingTag(DataTable fdata,String value)
 		{
-			DataSet ds = new DataSet();
-			return ds;
+			DataTable data = fdata.Clone();
+			for (int i = 0; i < fdata.Rows.Count; i++)
+			{
+				String Tag = fdata.Rows[i]["Tag"].ToString();
+				if (Tag.ToLower().Contains((value).ToLower()))
+				{
+					data.ImportRow(fdata.Rows[i]);
+				}
+			}
+				return data;
 		}
 	}
 }
