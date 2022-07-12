@@ -37,13 +37,8 @@ namespace Backlog_Segregation_Tool.Controllers
                     if (size > 0)
                     {
                 // full path to file in temp location
-                String filePath = _config.GetSection("Upload_path").Value; 
-                        
-                     if(!ExcelReader.ValidateExcelCoulmns(filePath,new string[] {"jhghh"}))
-				{
-                    return Json("Mandatory columns are missing");
-                    
-				}
+                String filePath = _config.GetSection("Excel_path").Value; 
+                  
                         using (var stream = new FileStream(filePath, FileMode.Create))
                         {
                              file.CopyTo(stream);
@@ -56,6 +51,32 @@ namespace Backlog_Segregation_Tool.Controllers
             
             return Json("File Uploaded Successfully.");
             }
+        [HttpPost]
+        public IActionResult UploadTask(IFormFile file)
+        {
+            long size = file.Length;
+
+
+
+            if (size > 0)
+            {
+                // full path to file in temp location
+                String filePath = _config.GetSection("Tasks_path").Value;
+
+               
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    file.CopyTo(stream);
+                }
+                _cache.Remove("tasks.DCHA.3.Architect.AMS.Imp");
+                _cache.Remove("tasks.DCHA.3.Architect.AMS.Base");
+            }
+            // process uploaded files
+            // Don't rely on or trust the FileName property without validation.
+
+            return Json("File Uploaded Successfully.");
+        }
+
         public IActionResult Success()
 		{
             return View();

@@ -29,8 +29,8 @@ function ExportToExcel(type, tablename, fn, dl) {
 		XLSX.writeFile(wb, fn || ('Backlog_' + tablename + '.' + (type || 'xlsx')));
 }
 
-function callChangefunc(val) {
-	window.location.href = "/Tasks?gname=" + val;
+function callChangefunc(url,val) {
+	window.location.href = "/"+url+"/?gname=" + val;
 }
 
 
