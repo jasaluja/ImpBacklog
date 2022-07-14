@@ -30,7 +30,7 @@ function ExportToExcel(type, tablename, fn, dl) {
 }
 
 function callChangefunc(url,val) {
-	window.location.href = "/"+url+"/?gname=" + val;
+	window.location.href = "/AMSDefectBacklog/"+url+"/?gname=" + val;
 }
 
 

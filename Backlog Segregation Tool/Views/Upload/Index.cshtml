@@ -43,7 +43,7 @@
 		if (response.ok) {
 			//	window.location.href = '/Upload/Excel';
 			console.log(response);
-			resultElement.innerHTML=response;
+			resultElement.innerHTML=@TempData["UploadMsg"];
 		} else {
 			resultElement.innerHTML = 'Issue in uploading this file.';
 			document.getElementById("sbtn").disabled = false;

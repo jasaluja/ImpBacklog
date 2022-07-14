@@ -37,9 +37,13 @@ namespace Backlog_Segregation_Tool.Controllers
                     if (size > 0)
                     {
                 // full path to file in temp location
-                String filePath = _config.GetSection("Excel_path").Value; 
-                  
-                        using (var stream = new FileStream(filePath, FileMode.Create))
+                String filePath = _config.GetSection("Excel_path").Value;
+                String[] mustColumns = _config.GetSection("MustCaseColumns").Get<List<string>>().ToArray();
+
+                bool valid = ExcelReader.ValidateExcelCoulmns(file, mustColumns);
+                TempData["UploadMsg"] = "Upload Failed! Please validate the File.";
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
                         {
                              file.CopyTo(stream);
                         }
@@ -48,11 +52,11 @@ namespace Backlog_Segregation_Tool.Controllers
             }
             // process uploaded files
             // Don't rely on or trust the FileName property without validation.
-            
+            TempData["UploadMsg"] = "File Uploaded";
             return Json("File Uploaded Successfully.");
             }
         [HttpPost]
-        public IActionResult UploadTask(IFormFile file)
+        public String UploadTask(IFormFile file)
         {
             long size = file.Length;
 
@@ -61,9 +65,13 @@ namespace Backlog_Segregation_Tool.Controllers
             if (size > 0)
             {
                 // full path to file in temp location
+                String[] mustColumns = _config.GetSection("MustTasksColumns").Get<List<string>>().ToArray();
                 String filePath = _config.GetSection("Tasks_path").Value;
-
-               
+                bool valid = ExcelReader.ValidateExcelCoulmns(file,mustColumns);
+                if (!valid) {
+                    TempData["UploadMsg"] = "Upload Failed! Please validate the File.";
+                    return "File not uploaded";
+                }
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     file.CopyTo(stream);
@@ -73,8 +81,8 @@ namespace Backlog_Segregation_Tool.Controllers
             }
             // process uploaded files
             // Don't rely on or trust the FileName property without validation.
-
-            return Json("File Uploaded Successfully.");
+            //TempData["UploadMsg"] = "File Uploaded";
+            return "File Uploaded Successfully.";
         }
 
         public IActionResult Success()

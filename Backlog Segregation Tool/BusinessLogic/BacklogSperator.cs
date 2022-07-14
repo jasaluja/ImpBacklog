@@ -48,8 +48,6 @@ namespace Backlog_Segregation_Tool
 			{
 				return;
 			}
-
-
 			diplomets = filtered_data.Clone();
 			diplomets.TableName = "Diplomets";
 			restdata = filtered_data.Clone();

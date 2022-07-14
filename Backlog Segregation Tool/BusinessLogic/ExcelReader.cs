@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Backlog_Segregation_Tool.BusinessLogic;
 using ExcelDataReader;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 
 namespace Backlog_Segregation_Tool.BusinessLogic
@@ -15,16 +16,16 @@ namespace Backlog_Segregation_Tool.BusinessLogic
         public static DataSet dataSet { set; get; }
         public static DataTable FilteredData;
         static IConfiguration configuration;
-        public static bool ValidateExcelCoulmns(String path,String[] mustColumns)
+        public static bool ValidateExcelCoulmns(IFormFile file,String[] mustColumns)
         {
             List<String> errors = new List<String>();
             try
             {
-                using (var stream = File.Open(path, FileMode.Open, FileAccess.Read))
+                using (var stream = new MemoryStream())
                 {
                     IExcelDataReader reader;
 
-
+                    file.CopyTo(stream);
                     reader = ExcelDataReader.ExcelReaderFactory.CreateOpenXmlReader(stream);
 
                     //// reader.IsFirstRowAsColumnNames
