@@ -32,6 +32,7 @@ namespace Backlog_Segregation_Tool.Controllers
 
 		public IActionResult Index(String gname = "DCHA.3.Architect.AMS.Imp")
 		{
+			ViewData["Title"] = "AMS Defect Backlog";
 			try
 			{
 			if (!String.IsNullOrEmpty(_config.GetSection("Excel_path").Value)) { 
@@ -76,7 +77,9 @@ namespace Backlog_Segregation_Tool.Controllers
 
 		public IActionResult Swarmed(String gname = "DCHA.3.Architect.AMS.Imp")
 		{
-			try {
+			ViewData["Title"] = "Pre-Triage Swarmed";
+			try
+			{
 				if (!String.IsNullOrEmpty(_config.GetSection("Excel_path").Value))
 				{
 					Excel_path = _config.GetSection("Excel_path").Value;
@@ -133,6 +136,8 @@ namespace Backlog_Segregation_Tool.Controllers
 		}
 		public IActionResult FastTrack(String gname = "DCHA.3.Architect.AMS.Imp")
 		{
+			ViewData["Title"] = "Pre-Triage FastTrack";
+
 			try
 			{
 				if (!String.IsNullOrEmpty(_config.GetSection("Excel_path").Value))

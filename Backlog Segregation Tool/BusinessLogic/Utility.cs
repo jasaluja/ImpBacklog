@@ -15,6 +15,7 @@ namespace Backlog_Segregation_Tool.BusinessLogic
 			if (columnNames.Length == 1 && columnNames[0] == "") return table;
 			foreach (var columnName in columnNames)
 			{
+				if (table.Columns[columnName] == null) continue;
 				table.Columns[columnName].SetOrdinal(columnIndex);
 				columnIndex++;
 			}

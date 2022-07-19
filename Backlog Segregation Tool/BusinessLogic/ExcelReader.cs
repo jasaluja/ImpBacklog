@@ -63,7 +63,13 @@ namespace Backlog_Segregation_Tool.BusinessLogic
                 }
                 return true;
             }
-        
+        public static DataTable MergeDataTables(DataTable dataTable1,DataTable dataTable2)
+		{
+            dataTable1.PrimaryKey = new DataColumn[] { dataTable1.Columns["Inquiry Number"] };
+            dataTable2.PrimaryKey = new DataColumn[] { dataTable2.Columns["Inquiry Number"] };
+            dataTable2.Merge(dataTable1);
+            return dataTable1;
+		}
         public static DataTable ReadExcel(String path)
 		{
             DataTable fileData;

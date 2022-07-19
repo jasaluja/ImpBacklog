@@ -16,6 +16,11 @@
 		body {
 			font-family: 'Roboto', sans-serif;
 		}
+		.menu-active{
+			border-bottom:3px solid orange;
+			color:green !important;
+		}
+		
 	</style>
 </head>
 <body>
@@ -28,9 +33,19 @@
 					<span class="navbar-toggler-icon"></span>
 				</button>
 			</div>
-			<div class="nav-link">@Html.ActionLink("Swarmed", "Swarmed", "Home")</div>
-			<div class="nav-link">@Html.ActionLink("FastTrack", "FastTrack", "Home")</div>
-
+			<div class="collapse navbar-collapse" id="collapsibleNavbar">
+				<ul class="navbar-nav">
+					<li id="home" class="nav-item">
+						<a class="nav-link" asp-controller="Home" asp-action="">Home</a>
+					</li>
+					<li id="swarmed" class="nav-item">
+						<a class="nav-link" asp-controller="Home" asp-action="Swarmed">Swarmed</a>
+					</li>
+					<li id="fastTrack" class="nav-item">
+						<a class="nav-link" asp-controller="Home" asp-action="FastTrack">Fast Track</a>
+					</li>
+				</ul>
+			</div>
 		</nav>
 	</header>
 	<div class="container-fluid">
@@ -45,6 +60,7 @@
 	<script type="text/javascript" src="~/js/JavaScript.js"></script>
 	<script src="~/js/site.js" asp-append-version="true"></script>
 	<script>
+
 		(function (factory) {
 			if (typeof define === "function" && define.amd) {
 				define(["jquery", "moment", "datatables.net"], factory);
@@ -93,6 +109,18 @@
 			};
 
 		}));
+		var loc = window.location.href.toString();
+		if (loc.includes("/Swarmed")) {
+			var menu = document.getElementById("swarmed");
+			menu.classList.add("menu-active");
+		}
+		else if (loc.includes("/FastTrack")) {
+			var menu = document.getElementById("fastTrack");
+			menu.classList.add("menu-active");
+		} else {
+			var menu = document.getElementById("home");
+			menu.classList.add("menu-active");
+		}
 	</script>
 	@RenderSection("Scripts", required: false)
 </body>

@@ -130,9 +130,25 @@ namespace Backlog_Segregation_Tool
 			OptimizersAssignedCases = optimizers.Rows.Count - OptimizersUnAssignedCases;
 			return;
 		}
+		public static DataTable MapTasksData2(DataTable fdata, DataTable tasks_data)
+		{
+			return ExcelReader.MergeDataTables(fdata, tasks_data);
+		}
 		public static DataTable MapTasksData(DataTable fdata, DataTable tasks_data)
 		{
 			DataTable preTriageData = fdata.Clone();
+			DataTable preTraige = tasks_data.Clone();
+
+			DataTable merged = new DataTable();
+			for(int i = 0; i < fdata.Columns.Count; i++)
+			{
+				merged.Columns.Add(fdata.Columns[i].ColumnName);
+			}
+			for (int i = 0; i < tasks_data.Columns.Count; i++)
+			{
+				if (tasks_data.Columns[i].ColumnName == "Inquiry Number") { }
+				else merged.Columns.Add(tasks_data.Columns[i].ColumnName);
+			}
 			List<String> pre_traigeIPlst = new List<String>();
 			for (int i = 0; i < tasks_data.Rows.Count; i++)
 			{
@@ -141,16 +157,35 @@ namespace Backlog_Segregation_Tool
 				if(String.Equals(task_desc, "Pre-Triage", StringComparison.OrdinalIgnoreCase)){
 					if (!String.Equals(task_state, "Closed", StringComparison.OrdinalIgnoreCase))
 					{
-						pre_traigeIPlst.Add(tasks_data.Rows[i]["Inquiry Number"].ToString());
+						preTraige.ImportRow(tasks_data.Rows[i]);
 					}
 				}
 			}
-			var rows = fdata.AsEnumerable().Where(x => pre_traigeIPlst.Contains(x["Inquiry Number"]));
-			if (rows.Any())
+			int count = 0;
+			for(int i = 0; i < fdata.Rows.Count;i++)
 			{
-				preTriageData = rows.CopyToDataTable();
+				String iqnum = fdata.Rows[i]["Inquiry Number"].ToString();
+				for (int j = 0; j < preTraige.Rows.Count;j++)
+				{
+					if(preTraige.Rows[j]["Inquiry Number"].ToString() == iqnum)
+					{
+						merged.Rows.Add();
+						for (int ii = 0; ii < fdata.Columns.Count; ii++)
+						{
+							merged.Rows[count][fdata.Columns[ii].ColumnName] = fdata.Rows[i][fdata.Columns[ii].ColumnName];
+						}
+						for (int ii = 0; ii < tasks_data.Columns.Count; ii++)
+						{
+							if (preTraige.Columns[ii].ColumnName == "Inquiry Number") { }
+							else merged.Rows[count][preTraige.Columns[ii].ColumnName] = preTraige.Rows[j][preTraige.Columns[ii].ColumnName];
+						}
+						count++;
+					}
+					
+				}
 			}
-			return preTriageData;
+			
+			return merged;
 		}
 	
 		public static DataTable FiltereUsingTag(DataTable fdata,String value)
