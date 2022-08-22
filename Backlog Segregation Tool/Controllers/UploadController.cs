@@ -32,27 +32,36 @@ namespace Backlog_Segregation_Tool.Controllers
             {
                 long size = file.Length;
 
-            
-                
-                    if (size > 0)
+            try
+            {
+
+                if (size > 0)
+                {
+                    // full path to file in temp location
+                    String filePath = _config.GetSection("Excel_path").Value;
+                    String[] mustColumns = _config.GetSection("MustCaseColumns").Get<List<string>>().ToArray();
+                    
+                    bool valid = ExcelReader.ValidateExcelCoulmns(file, mustColumns);
+                    if (!valid)
                     {
-                // full path to file in temp location
-                String filePath = _config.GetSection("Excel_path").Value;
-                String[] mustColumns = _config.GetSection("MustCaseColumns").Get<List<string>>().ToArray();
+                        TempData["UploadMsg"] = "Upload Failed! Please validate the File.";
+                        return Json("Upload Failed! Please validate the File.");
+                    }
 
-                bool valid = ExcelReader.ValidateExcelCoulmns(file, mustColumns);
-                TempData["UploadMsg"] = "Upload Failed! Please validate the File.";
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                        {
-                             file.CopyTo(stream);
-                        }
-                _cache.Remove("DCHA.3.Architect.AMS.Imp");
-                _cache.Remove("DCHA.3.Architect.AMS.Base");
-            }
-            // process uploaded files
-            // Don't rely on or trust the FileName property without validation.
-            TempData["UploadMsg"] = "File Uploaded";
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        file.CopyTo(stream);
+                    }
+                    _cache.Remove("DCHA.3.Architect.AMS.Imp");
+                    _cache.Remove("DCHA.3.Architect.AMS.Base");
+                }
+                // process uploaded files
+                // Don't rely on or trust the FileName property without validation.
+                TempData["UploadMsg"] = "File Uploaded";
+            }catch(Exception e)
+			{
+                return Json(e.StackTrace);
+			}
             return Json("File Uploaded Successfully.");
             }
         [HttpPost]
@@ -70,7 +79,7 @@ namespace Backlog_Segregation_Tool.Controllers
                 bool valid = ExcelReader.ValidateExcelCoulmns(file,mustColumns);
                 if (!valid) {
                     TempData["UploadMsg"] = "Upload Failed! Please validate the File.";
-                    return "File not uploaded";
+                    return "Upload Failed! Please validate the File.";
                 }
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {

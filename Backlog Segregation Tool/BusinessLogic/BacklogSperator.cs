@@ -77,7 +77,6 @@ namespace Backlog_Segregation_Tool
 
 					}
 				}
-
 			}
 			diplomets = Utility.ReOrderTable(diplomets, columnOrder);
 			diplomets = Utility.AddPreTriageStatusColumn(diplomets);
@@ -138,7 +137,6 @@ namespace Backlog_Segregation_Tool
 		{
 			DataTable preTriageData = fdata.Clone();
 			DataTable preTraige = tasks_data.Clone();
-
 			DataTable merged = new DataTable();
 			for(int i = 0; i < fdata.Columns.Count; i++)
 			{
@@ -149,12 +147,12 @@ namespace Backlog_Segregation_Tool
 				if (tasks_data.Columns[i].ColumnName == "Inquiry Number") { }
 				else merged.Columns.Add(tasks_data.Columns[i].ColumnName);
 			}
-			List<String> pre_traigeIPlst = new List<String>();
 			for (int i = 0; i < tasks_data.Rows.Count; i++)
 			{
 				String task_desc = tasks_data.Rows[i]["Task Short Description"].ToString();
 				String task_state = tasks_data.Rows[i]["Task State"].ToString();
-				if(String.Equals(task_desc, "Pre-Triage", StringComparison.OrdinalIgnoreCase)){
+				task_desc= task_desc.ToLower();
+				if(task_desc.Contains("pre-triage")||task_desc.Contains("pretriage")||task_desc.Contains("pre triage")){
 					if (!String.Equals(task_state, "Closed", StringComparison.OrdinalIgnoreCase))
 					{
 						preTraige.ImportRow(tasks_data.Rows[i]);
@@ -167,7 +165,7 @@ namespace Backlog_Segregation_Tool
 				String iqnum = fdata.Rows[i]["Inquiry Number"].ToString();
 				for (int j = 0; j < preTraige.Rows.Count;j++)
 				{
-					if(preTraige.Rows[j]["Inquiry Number"].ToString() == iqnum)
+					if(String.Equals(iqnum, preTraige.Rows[j]["Inquiry Number"].ToString(),StringComparison.OrdinalIgnoreCase))
 					{
 						merged.Rows.Add();
 						for (int ii = 0; ii < fdata.Columns.Count; ii++)
